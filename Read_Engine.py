@@ -6,11 +6,20 @@ import os
 class Reader():
 
     def ReadXML(self, filepath):
-        for event, elem in ET.iterparse(filepath, events=['start']):
-            if elem.tag == 'AbstractText':
-                self._content = elem.text
+        abstract_texts = []
+        context = ET.iterparse(filepath, events=('start', 'end'))
+
+        for event, elem in context:
+            if event == 'end' and elem.tag == 'AbstractText':
+                text = self.get_text_without_tags(elem)
+                abstract_texts.append(text)
+                elem.clear()
             if elem.tag == 'Title':
                 self._title = elem.text
+
+        combined_text = ' '.join(abstract_texts)
+        self._content = combined_text
+
         return [self._title, self._content, filepath]
 
     def ReadJASON(self, filepath):
@@ -37,3 +46,14 @@ class Reader():
             else:
                 print("暫不支援的格式")
         return datamessage
+
+    def get_text_without_tags(self, element):
+        parts = [element.text or '']
+
+        for subelem in element:
+            parts.append(self.get_text_without_tags(subelem))
+            if subelem.tail:
+                parts.append(' ' + subelem.tail.strip() + ' ')
+            else:
+                parts.append(' ')
+        return ''.join(parts).strip()

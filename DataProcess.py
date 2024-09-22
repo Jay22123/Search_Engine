@@ -12,62 +12,94 @@ class Processor():
         nltk.download('punkt_tab')
         nltk.download('stopwords')
 
+    def Clear(self):
+        self._data.clear()
+
     def LoadData(self, data):
         self._data.append(data)
 
     def Normalize(self, keyword):
+        self._dictionary = []
+        self._nltk_texts = []
         for data in self._data:
             [title, content, path] = data
             content = str(content)
-            self._filtered_tokens = self.preprocess(content)
 
-            self._nltk_texts = {title: Text(self.preprocess(content))}
+            nltk_texts = {title: Text(nltk.word_tokenize(content))}
+            self._nltk_texts.append(nltk_texts)
 
-            self._inverted_index = self.build_inverted_index(title)
-
-            print(self._inverted_index)  # 輸出過濾後的 tokens
-
-            results = self.analyze_text(content, keyword)
-            print("Keywords count:", results["keyword_count"])
-            print("Characters count (including spaces):",
-                  results["char_count_including_spaces"])
-            print("Characters count (excluding spaces):",
-                  results["char_count_excluding_spaces"])
-            print("Word count:", results["word_count"])
-            print("Sentence count:", results["sentence_count"])
-            print("Non-ASCII characters count:",
-                  results["non_ascii_char_count"])
-            print("Non-ASCII words count:", results["non_ascii_word_count"])
-
-    def build_inverted_index(self, documentsID):
-        inverted_index = defaultdict(list)
-        # 建立索引，記錄每個單詞出現在的文檔
-        for token in self._filtered_tokens:
-            inverted_index[token].append(documentsID)
-
-        return inverted_index
+            self._results = self.analyze_text(content, keyword)
+            self._results.update(
+                {"Title": title, "Content": content, "Path": path})
+            self._dictionary.append(self._results)
+            # print("Keywords count:", results["keyword_count"])
+            # print("Characters count (including spaces):", results["char_count_including_spaces"])
+            # print("Characters count (excluding spaces):", results["char_count_excluding_spaces"])
+            # print("Word count:", results["word_count"])
+            # print("Sentence count:", results["sentence_count"])
+            # print("Non-ASCII characters count:",results["non_ascii_char_count"])
+            # print("Non-ASCII words count:", results["non_ascii_word_count"])
+        return self._dictionary
 
     def Search(self, query):
         if len(query) != 0:
             query_tokens = self.preprocess(query)
             results = defaultdict(list)
-
             for token in query_tokens:
                 print(f"\nConcordance for '{token}':")
-            for doc_id, text in self._nltk_texts.items():
-                if token in text:
-                    print(f"\nDocument: {doc_id}")
-                    # 使用 concordance 展示上下文
-                    text.concordance(token)
-                    results[doc_id].append(token)
-            return results
+            for item in self._nltk_texts:
+                # 分割文件ID 跟nltk的text
+                for doc_id, text in item.items():
+                    resultline = self.display_full_concordance(
+                        text, token, 3, 20)
+                    results[doc_id].append(resultline)
+
+                    # if token in text:
+
+                    #     # print(f"\nDocument: {doc_id}")
+                    #     # 使用 concordance 展示上下文
+                    #     text.concordance(token)
+                    #     concordance_list = text.concordance_list(
+                    #         token, lines=20)
+                    #     results[doc_id].append(concordance_list)
+
+        return results
 
     def preprocess(self, text):
         text = text.translate(str.maketrans('', '', string.punctuation))
         tokens = word_tokenize(text.lower())
         stop_words = set(stopwords.words('english'))
-        filtered_tokens = [word for word in tokens if word not in stop_words]
+        # if word not in stop_words  自行決定是否排除常用字
+        filtered_tokens = [word for word in tokens]
         return filtered_tokens
+
+    def display_full_concordance(self, text, token, window=5, lines=10):
+        """
+        token 的上下文而不截断
+        :param text: nltk 的 Text 对象
+        :param token: 要搜索的目标 token
+        :param window: 上下文范围的词数
+        :param lines: 显示结果的行数
+        """
+        matches = [i for i, t in enumerate(
+            text.tokens) if t.lower() == token.lower()]
+        result_lines = []
+
+        if not matches:
+            return "<br>".join(result_lines)
+
+        for i in matches[:lines]:
+            start = max(i - window, 0)
+            end = min(i + window + 1, len(text.tokens))
+
+            left_context = ' '.join(text.tokens[start:i])
+            right_context = ' '.join(text.tokens[i + 1:end])
+
+            highlighted_token = f"<span style='color: red; background-color: yellow;'>{
+                token}</span>"
+            result_lines.append(f"... {left_context} {
+                                highlighted_token} {right_context} ...")
+        return "<br>".join(result_lines)
 
     def analyze_text(self, text, keywords):
         # 1. 關鍵字數量
