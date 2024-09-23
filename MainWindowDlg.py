@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
             result = self._processor.Search(str(self.__ui.lineEdit.text()))
             dispaly = ""
             for key, concordance_list in result.items():  # 分別對個別文件取收尋結果key = 文件title
-                dispaly += f"[{key}]<br>" + "<br>".join(concordance_list) + "<br>"
+                dispaly += f'<span style="color:#0023F5;">[{key}]</span><br>' + "<br>".join(concordance_list) + "<br>"
 
             self.__ui.Search_result.setText(dispaly)
             self.__ui.Search_result.setOpenExternalLinks(True)

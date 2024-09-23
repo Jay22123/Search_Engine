@@ -51,7 +51,7 @@ class Processor():
                 for doc_id, text in item.items():
                     results = []
                     for token in query_tokens:
-                        print(f"\nConcordance for '{token}':")
+                        #print(f"\nConcordance for '{token}':")
                         results.append(self.display_full_concordance(text, token, 3, 20))
                     
                         #results[doc_id].append(resultline)
