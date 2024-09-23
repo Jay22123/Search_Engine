@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.penColor = QColor("333333")
 
         self.__ui.title.setWordWrap(True)
-        self.__ui.title.setFixedWidth(400)
+        self.__ui.title.setFixedWidth(600)
         self.__ui.title.setStyleSheet(
             "border: 2px solid red; padding: 5px;")
 
@@ -47,8 +47,10 @@ class MainWindow(QMainWindow):
                 self._processor.LoadData(data)
 
     def bnt_Search_Clicked(self):
-        self._dictionary = self._processor.Normalize(
-            str(self.__ui.lineEdit.text()))
+        self.__ui.Search_result.clear()
+        self.__ui.comboBox.clear()
+        self._dictionary = self._processor.Normalize(str(self.__ui.lineEdit.text()))
+
         for item in self._dictionary:
             self.__ui.comboBox.insertItem(0, (item['Path']))
 
@@ -56,8 +58,7 @@ class MainWindow(QMainWindow):
             result = self._processor.Search(str(self.__ui.lineEdit.text()))
             dispaly = ""
             for key, concordance_list in result.items():  # 分別對個別文件取收尋結果key = 文件title
-                dispaly += f"[{key}]<br>" + \
-                    "<br>".join(concordance_list) + "<br>"
+                dispaly += f"[{key}]<br>" + "<br>".join(concordance_list) + "<br>"
 
             self.__ui.Search_result.setText(dispaly)
             self.__ui.Search_result.setOpenExternalLinks(True)

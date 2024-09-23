@@ -4,6 +4,7 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize  # 引入 NLTK 的分詞模組
 from nltk.corpus import stopwords  # 引入 NLTK 的停用詞庫模組
 from nltk.text import Text
+import os
 
 
 class Processor():
@@ -11,6 +12,7 @@ class Processor():
         self._data = []
         nltk.download('punkt_tab')
         nltk.download('stopwords')
+        nltk.download('punkt')
 
     def Clear(self):
         self._data.clear()
@@ -44,26 +46,18 @@ class Processor():
     def Search(self, query):
         if len(query) != 0:
             query_tokens = self.preprocess(query)
-            results = defaultdict(list)
-            for token in query_tokens:
-                print(f"\nConcordance for '{token}':")
+            search_results = {}
             for item in self._nltk_texts:
-                # 分割文件ID 跟nltk的text
                 for doc_id, text in item.items():
-                    resultline = self.display_full_concordance(
-                        text, token, 3, 20)
-                    results[doc_id].append(resultline)
+                    results = []
+                    for token in query_tokens:
+                        print(f"\nConcordance for '{token}':")
+                        results.append(self.display_full_concordance(text, token, 3, 20))
+                    
+                        #results[doc_id].append(resultline)
+                search_results[doc_id] = results
 
-                    # if token in text:
-
-                    #     # print(f"\nDocument: {doc_id}")
-                    #     # 使用 concordance 展示上下文
-                    #     text.concordance(token)
-                    #     concordance_list = text.concordance_list(
-                    #         token, lines=20)
-                    #     results[doc_id].append(concordance_list)
-
-        return results
+        return search_results
 
     def preprocess(self, text):
         text = text.translate(str.maketrans('', '', string.punctuation))
@@ -95,10 +89,8 @@ class Processor():
             left_context = ' '.join(text.tokens[start:i])
             right_context = ' '.join(text.tokens[i + 1:end])
 
-            highlighted_token = f"<span style='color: red; background-color: yellow;'>{
-                token}</span>"
-            result_lines.append(f"... {left_context} {
-                                highlighted_token} {right_context} ...")
+            highlighted_token = f"<span style='color: red; background-color: yellow;'>{token}</span>"
+            result_lines.append(f"... {left_context} {highlighted_token} {right_context} ...")
         return "<br>".join(result_lines)
 
     def analyze_text(self, text, keywords):
