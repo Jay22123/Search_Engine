@@ -16,11 +16,11 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_7">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_4" stretch="9">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,3">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,2,5">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,2,7">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1,2">
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,1">
           <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
@@ -110,7 +110,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,1,2">
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,1,0">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="8,2">
             <item>
@@ -212,19 +212,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
+           <widget class="QListWidget" name="file_list"/>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,3">
             <item>
@@ -247,7 +240,7 @@
                <string notr="true"/>
               </property>
               <property name="text">
-               <string/>
+               <string>文章title</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -265,7 +258,7 @@
                </font>
               </property>
               <property name="text">
-               <string/>
+               <string>文字統計</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -274,68 +267,23 @@
             </item>
            </layout>
           </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,3">
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="font">
-               <font>
-                <family>微軟正黑體</family>
-                <pointsize>14</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>搜尋結果</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QScrollArea" name="scrollArea">
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>583</width>
-                   <height>384</height>
-                  </rect>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_8">
-                  <item>
-                   <widget class="QLabel" name="Search_result">
-                    <property name="font">
-                     <font>
-                      <family>微軟正黑體</family>
-                      <pointsize>14</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
+           <widget class="QTextEdit" name="textEdit"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QTextEdit" name="textEdit_2"/>
           </item>
          </layout>
         </item>

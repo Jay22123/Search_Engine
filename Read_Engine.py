@@ -4,23 +4,25 @@ import os
 
 
 class Reader():
-
     def ReadXML(self, filepath):
         abstract_texts = []
-        context = ET.iterparse(filepath, events=('start', 'end'))
-
-        for event, elem in context:
+        content = ET.iterparse(filepath, events=('start', 'end'))
+     
+        for event, elem in content:
             if event == 'end' and elem.tag == 'AbstractText':
                 text = self.get_text_without_tags(elem)
                 abstract_texts.append(text)
                 elem.clear()
-            if elem.tag == 'Title':
+            if elem.tag == 'ArticleTitle':
                 self._title = elem.text
 
         combined_text = ' '.join(abstract_texts)
         self._content = combined_text
 
-        return [self._title, self._content, filepath]
+        return { "Title":self._title,"Content": self._content,"FilePath":filepath}
+
+    def GetFileNum(self):
+        return len(self.files)
 
     def ReadJASON(self, filepath):
         with open(filepath, 'r', encoding='utf-8') as file:

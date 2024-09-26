@@ -5,6 +5,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize  # 引入 NLTK 的分詞�
 from nltk.corpus import stopwords  # 引入 NLTK 的停用詞庫模組
 from nltk.text import Text
 import os
+import re
 
 
 class Processor():
@@ -20,28 +21,24 @@ class Processor():
     def LoadData(self, data):
         self._data.append(data)
 
-    def Normalize(self, keyword):
+    #計算每篇文章的ˊ字數.....
+    def Normalize(self, data):
         self._dictionary = []
         self._nltk_texts = []
-        for data in self._data:
-            [title, content, path] = data
-            content = str(content)
+        
+        content = str(data["Content"])
 
-            nltk_texts = {title: Text(nltk.word_tokenize(content))}
-            self._nltk_texts.append(nltk_texts)
-
-            self._results = self.analyze_text(content, keyword)
-            self._results.update(
-                {"Title": title, "Content": content, "Path": path})
-            self._dictionary.append(self._results)
-            # print("Keywords count:", results["keyword_count"])
-            # print("Characters count (including spaces):", results["char_count_including_spaces"])
-            # print("Characters count (excluding spaces):", results["char_count_excluding_spaces"])
-            # print("Word count:", results["word_count"])
-            # print("Sentence count:", results["sentence_count"])
-            # print("Non-ASCII characters count:",results["non_ascii_char_count"])
-            # print("Non-ASCII words count:", results["non_ascii_word_count"])
-        return self._dictionary
+        self._results = self.analyze_text(content)
+        self._results.update(data)
+        # print("Title:", self._results["Title"])
+        # print("Characters count (including spaces):", self._results["char_count_including_spaces"])
+        # print("Characters count (excluding spaces):", self._results["char_count_excluding_spaces"])
+        # print("Word count:", self._results["word_count"])
+        # print("Sentence count:", self._results["sentence_count"])
+        # print("Non-ASCII characters count:",self._results["non_ascii_char_count"])
+        # print("Non-ASCII words count:", self._results["non_ascii_word_count"])
+        # print("="*48)
+        return self._results
 
     def Search(self, query):
         if len(query) != 0:
@@ -62,9 +59,11 @@ class Processor():
     def preprocess(self, text):
         text = text.translate(str.maketrans('', '', string.punctuation))
         tokens = word_tokenize(text.lower())
-        stop_words = set(stopwords.words('english'))
+        #stop_words = set(stopwords.words('english'))
         # if word not in stop_words  自行決定是否排除常用字
+     
         filtered_tokens = [word for word in tokens]
+     
         return filtered_tokens
 
     def display_full_concordance(self, text, token, window=5, lines=10):
@@ -93,15 +92,11 @@ class Processor():
             result_lines.append(f"... {left_context} {highlighted_token} {right_context} ...")
         return "<br>".join(result_lines)
 
-    def analyze_text(self, text, keywords):
-        # 1. 關鍵字數量
+    def analyze_text(self, text):
+        
         words = word_tokenize(text.lower())
-        if len(keywords) == 0:
-            keyword_count = 0
-        else:
-            keywords = self.preprocess(keywords)
-            keyword_count = sum(1 for word in words if word in keywords)
-
+        cleaned_words = [re.sub(r'[^\w\s]', '', word) for word in words if re.sub(r'[^\w\s]', '', word)]
+           
         # 2. char數(含空格)
         char_count_including_spaces = len(text)
 
@@ -109,7 +104,7 @@ class Processor():
         char_count_excluding_spaces = len(text.replace(" ", ""))
 
         # 4. word數量
-        word_count = len(words)
+        word_count = len(cleaned_words)
 
         # 5. 句子數量
         sentences = sent_tokenize(text)
@@ -125,7 +120,6 @@ class Processor():
         non_ascii_word_count = len(non_ascii_words)
 
         return {
-            "keyword_count": keyword_count,
             "char_count_including_spaces": char_count_including_spaces,
             "char_count_excluding_spaces": char_count_excluding_spaces,
             "word_count": word_count,

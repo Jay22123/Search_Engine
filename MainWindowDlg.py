@@ -14,17 +14,20 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.__ui = Ui_MainWindow()
         self.__ui.setupUi(self)
-
+        self.showMaximized()
         self.fillColor = QColor(30, 30, 30, 120)
         self.penColor = QColor("333333")
+        
+        #記錄載入的檔案的所有資訊
+        self.file = {}
+       
 
-        self.__ui.title.setWordWrap(True)
-        self.__ui.title.setFixedWidth(600)
-        self.__ui.title.setStyleSheet(
-            "border: 2px solid red; padding: 5px;")
 
-        self.__ui.Search_result.setWordWrap(True)
-        self.__ui.Search_result.setFixedWidth(600)
+         # 檔案列表區域
+        self.__ui.file_list.setFont(QFont("Arial", 12))
+        self.__ui.file_list.itemSelectionChanged.connect(self.display_file_content)
+
+       
 
         self._processor = Processor()
         self._reader = Reader()
@@ -34,21 +37,36 @@ class MainWindow(QMainWindow):
     def setup_control(self):
         self.__ui.Load.clicked.connect(self.bnt_load_Clicked)
         self.__ui.Search.clicked.connect(self.bnt_Search_Clicked)
-        self.__ui.comboBox.currentIndexChanged.connect(self.ccb_Clicked)
+       
 
     def bnt_load_Clicked(self):
         self._processor.Clear()
-        self.__ui.comboBox.clear()
-        filenames, filetype = QFileDialog.getOpenFileNames(
-            self, "Open file", "./data")
-        for filename in filenames:
-            if os.path.isfile(filename):
-                data = self._reader.ReadDocument(filename)
-                self._processor.LoadData(data)
+       
+        options = QFileDialog.Options()
+        files, _ = QFileDialog.getOpenFileNames(self, "選擇 XML 檔案", "./data", "XML Files (*.xml);;All Files (*)", options=options)
+        if files:
+            for file_path in files:
+                file_name = file_path.split('/')[-1]
+                data = self._reader.ReadDocument(file_path)
+                #統計文章字數,句數等
+                result = self._processor.Normalize(data) 
+                self.file[file_name] = result
+                self.__ui.file_list.addItem(file_name)
+
+    
+    def display_file_content(self):
+        # 顯示選擇的檔案內容
+        selected_item = self.__ui.file_list.currentItem()
+        if selected_item:
+            file_name = selected_item.text()
+            content = self.files.get(file_name, "")
+            self.textEdit.setText(content)
+    
 
     def bnt_Search_Clicked(self):
         self.__ui.Search_result.clear()
-        self.__ui.comboBox.clear()
+
+        
         self._dictionary = self._processor.Normalize(str(self.__ui.lineEdit.text()))
 
         for item in self._dictionary:
@@ -63,16 +81,7 @@ class MainWindow(QMainWindow):
             self.__ui.Search_result.setText(dispaly)
             self.__ui.Search_result.setOpenExternalLinks(True)
 
-    def ccb_Clicked(self):
-        num = self.__ui.comboBox.currentIndex()
-        data = self._dictionary[num]
-        self.__ui.title.setText(data['Title'])
-
-        remove = ["Title", "Content", "Path"]
-
-        dict_text = "\n".join(
-            [f"{key}: {value}" for key, value in data.items() if key not in remove])
-        self.__ui.Content_analyze.setText(dict_text)
+   
 
     def paintEvent(self, event):
         s = self.size()
