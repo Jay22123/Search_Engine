@@ -18,9 +18,34 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,3">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,2,7">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="4,1,7">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,1">
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,7">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="font">
+             <font>
+              <family>微軟正黑體</family>
+              <pointsize>14</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>已上傳檔案</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="file_list"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,1,1">
           <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
@@ -95,60 +120,15 @@
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+           <widget class="QPushButton" name="Delete">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,1,0">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="8,2">
-            <item>
-             <widget class="QLineEdit" name="lineEdit">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <family>微軟正黑體</family>
-                <pointsize>14</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="Search">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <family>Adobe Devanagari</family>
-                <weight>75</weight>
-                <italic>false</italic>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"> QPushButton {
+            <property name="styleSheet">
+             <string notr="true"> QPushButton {
                 border: 1px solid #199909;
                 border-radius: 15px;
                 color: white;
@@ -185,34 +165,24 @@
                 font: bold;
             }
 </string>
-              </property>
-              <property name="text">
-               <string>搜尋</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="font">
-             <font>
-              <family>微軟正黑體</family>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
             </property>
             <property name="text">
-             <string>已上傳檔案</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <string>刪除資料</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="file_list"/>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -272,18 +242,179 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,9">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="7,9,3,5,1">
           <item>
-           <widget class="QTextEdit" name="textEdit"/>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>微軟正黑體</family>
+              <pointsize>14</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="Search">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>Adobe Devanagari</family>
+              <weight>75</weight>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"> QPushButton {
+                border: 1px solid #199909;
+                border-radius: 15px;
+                color: white;
+                font: bold;
+                padding-left:10px;
+                padding-right:10px;
+                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.86,stop: 0 #24B375, stop: 1 #7CB31B);
+               
+            }
+            QPushButton:hover {
+                background-color: #6A4005;
+                border: 7px dashed #09940E;
+                border-radius: 15px;
+                padding-left:10px;
+                padding-right:10px;
+                color: white;
+                font: bold;
+                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.86,stop: 0 #24B375, stop: 1 #7CB31B);
+            }
+            QPushButton:pressed {
+                border: 1px solid #333333;
+                background-color: #127005;
+                padding-left:10px;
+                padding-right:10px;
+                color: white;
+                font: bold;
+                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.67, stop: 0 #127005, stop: 1 #127005);
+            }
+             QPushButton:checked {
+                border: 1px solid #333333;
+                padding-left:10px;
+                padding-right:10px;
+                color: white;
+                font: bold;
+            }
+</string>
+            </property>
+            <property name="text">
+             <string>搜尋</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1">
+            <item>
+             <widget class="QPushButton" name="Exit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QTextEdit" name="textEdit_2"/>
+           <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+            <item>
+             <widget class="QTextEdit" name="textEdit">
+              <property name="styleSheet">
+               <string notr="true">QTextEdit {
+                background-color: rgba(255, 255, 255, 180); 
+                border: 1px solid #ccc;
+                color: black; /* 設定文字顏色 */
+                font-size: 24px;
+			    font-weight: bold; /* 設定字體粗體 */
+                border-radius: 5px;
+            }</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="textEdit_2">
+              <property name="styleSheet">
+               <string notr="true">QTextEdit {
+                background-color: rgba(255, 255, 255, 180); 
+                border: 1px solid #ccc;
+                color:black; /* 設定文字顏色 */
+                font-size: 24px;
+			    font-weight: bold; 
+                border-radius: 5px;
+            }
+</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -299,7 +430,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
