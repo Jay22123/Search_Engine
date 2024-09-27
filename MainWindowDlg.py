@@ -26,6 +26,12 @@ class MainWindow(QMainWindow):
             }
         """)
 
+        self.__ui.Search_input.setPlaceholderText('輸入搜尋關鍵字...')
+        self.__ui.Search_input.textChanged.connect(self.highlight_text)  # 當文字改變時執行搜尋
+
+        self.__ui.ccb_Page1.currentIndexChanged.connect(self.update_Page1)  # 當選項改變時更新 QTextEdit1
+        self.__ui.ccb_Page2.currentIndexChanged.connect(self.update_Page2)  # 當選項改變時更新 QTextEdit1
+
         self.fillColor = QColor(30, 30, 30, 120)
         self.penColor = QColor("333333")
 
@@ -44,7 +50,6 @@ class MainWindow(QMainWindow):
 
     def setup_control(self):
         self.__ui.Load.clicked.connect(self.bnt_load_Clicked)
-        self.__ui.Search.clicked.connect(self.bnt_Search_Clicked)
         self.__ui.Delete.clicked.connect(self.delete_selected_file)
         self.__ui.Exit.clicked.connect(self.close_application)
 
@@ -53,8 +58,8 @@ class MainWindow(QMainWindow):
         self.close()
 
     def bnt_load_Clicked(self):
-        self._processor.Clear()
-
+        self.__ui.ccb_Page1.clear()
+        self.__ui.ccb_Page2.clear()
         options = QFileDialog.Options()
         files, _ = QFileDialog.getOpenFileNames(
             self, "選擇 XML 檔案", "./data", "XML Files (*.xml);;All Files (*)", options=options)
@@ -66,6 +71,11 @@ class MainWindow(QMainWindow):
                 result = self._processor.Normalize(data)
                 self.file[file_name] = result
                 self.__ui.file_list.addItem(file_name)
+                self.__ui.ccb_Page1.addItem(file_name,result)
+                self.__ui.ccb_Page2.addItem(file_name,result)
+
+
+
 
     def display_file_content(self):
         # 顯示選擇的檔案內容
@@ -73,8 +83,7 @@ class MainWindow(QMainWindow):
         if selected_item:
             file_name = selected_item.text()
             content = self.file[file_name]["Content"]
-            self.__ui.textEdit.setText(content)
-            # 透過nltk處理成一句一句
+            
 
     def delete_selected_file(self):
         # 刪除選擇的檔案
@@ -89,27 +98,68 @@ class MainWindow(QMainWindow):
                 # 移除檔案
                 self.file.pop(file_name, None)
                 self.__ui.file_list.takeItem(
-                    self.__ui.file_list.row(selected_item))
+                self.__ui.file_list.row(selected_item))
                 self.__ui.textEdit.clear()
 
-    def bnt_Search_Clicked(self):
-        self.__ui.Search_result.clear()
+    def update_Page1(self):
+        selected_item = self.__ui.ccb_Page1.currentData()
+        if selected_item:
+            text = selected_item
+            # 顯示內容於 QTextEdit1 中
+            search_word = self.__ui.Search_input.text().strip().lower()
+            self._processor.search(text['Content'],search_word)
+           # self.__ui.textEdit.setPlainText(f"內容:\n{text['Content']}")
 
-        self._dictionary = self._processor.Normalize(
-            str(self.__ui.lineEdit.text()))
+    def update_Page2(self):
+        selected_item = self.__ui.ccb_Page2.currentData()
+        if selected_item:
+            text = selected_item
+            # 顯示內容於 QTextEdit1 中
+            self.__ui.textEdit_2.setPlainText(f"內容:\n{text['Content']}")
 
-        for item in self._dictionary:
-            self.__ui.comboBox.insertItem(0, (item['Path']))
 
-        if str(self.__ui.lineEdit.text()):
-            result = self._processor.Search(str(self.__ui.lineEdit.text()))
-            dispaly = ""
-            for key, concordance_list in result.items():  # 分別對個別文件取收尋結果key = 文件title
-                dispaly += f'<span style="color:#0023F5;">[{
-                    key}]</span><br>' + "<br>".join(concordance_list) + "<br>"
+    def highlight_text(self):
+        # 取得使用者輸入的搜尋關鍵字
+        search_word = self.__ui.Search_input.text().strip().lower()
 
-            self.__ui.Search_result.setText(dispaly)
-            self.__ui.Search_result.setOpenExternalLinks(True)
+        # 高亮顯示 QTextEdit1 中的關鍵字
+        self.highlight_in_text_edit(self.__ui.textEdit, search_word)
+
+        # 高亮顯示 QTextEdit2 中的關鍵字
+        self.highlight_in_text_edit(self.__ui.textEdit_2, search_word)
+
+    def highlight_in_text_edit(self, text_edit, search_word):
+        if not search_word:
+            return
+
+        # 取得 QTextEdit 的文字內容
+        text = text_edit.toPlainText()
+        tokens = word_tokenize(text.lower())
+
+        # 取得 QTextEdit 的游標和格式
+        cursor = text_edit.textCursor()
+        format = QTextCharFormat()
+
+        # 設定高亮顏色
+        format.setBackground(QColor("yellow"))  # 底色設為黃色
+        format.setForeground(QColor("red"))     # 字體顏色設為紅色
+
+        # 從文件開頭開始搜尋並高亮顯示匹配的詞
+        cursor.setPosition(0)
+
+        # 使用 NLTK 的分詞結果來尋找匹配
+        start = 0
+        while start < len(tokens):
+            if tokens[start] == search_word:
+                # 尋找詞在原文本中的實際位置
+                index = text.lower().find(search_word, cursor.position())
+                if index != -1:
+                    cursor.setPosition(index)
+                    cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, len(search_word))
+                    cursor.mergeCharFormat(format)  # 套用格式
+                start += 1
+            else:
+                start += 1
 
     def paintEvent(self, event):
         painter = QPainter(self)

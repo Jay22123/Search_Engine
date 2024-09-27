@@ -259,7 +259,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="Search_input">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -384,11 +384,16 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+           <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0">
             <item>
-             <widget class="QTextEdit" name="textEdit">
-              <property name="styleSheet">
-               <string notr="true">QTextEdit {
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QComboBox" name="ccb_Page1"/>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="textEdit">
+                <property name="styleSheet">
+                 <string notr="true">QTextEdit {
                 background-color: rgba(255, 255, 255, 180); 
                 border: 1px solid #ccc;
                 color: black; /* 設定文字顏色 */
@@ -396,13 +401,20 @@
 			    font-weight: bold; /* 設定字體粗體 */
                 border-radius: 5px;
             }</string>
-              </property>
-             </widget>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
-             <widget class="QTextEdit" name="textEdit_2">
-              <property name="styleSheet">
-               <string notr="true">QTextEdit {
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QComboBox" name="ccb_Page2"/>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="textEdit_2">
+                <property name="styleSheet">
+                 <string notr="true">QTextEdit {
                 background-color: rgba(255, 255, 255, 180); 
                 border: 1px solid #ccc;
                 color:black; /* 設定文字顏色 */
@@ -411,8 +423,10 @@
                 border-radius: 5px;
             }
 </string>
-              </property>
-             </widget>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -430,7 +444,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>

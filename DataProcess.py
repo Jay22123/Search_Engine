@@ -15,17 +15,9 @@ class Processor():
         nltk.download('stopwords')
         nltk.download('punkt')
 
-    def Clear(self):
-        self._data.clear()
-
-    def LoadData(self, data):
-        self._data.append(data)
-
     #計算每篇文章的ˊ字數.....
     def Normalize(self, data):
-        self._dictionary = []
-        self._nltk_texts = []
-        
+     
         content = str(data["Content"])
 
         self._results = self.analyze_text(content)
@@ -40,8 +32,47 @@ class Processor():
         # print("="*48)
         return self._results
 
-    def Search(self, query):
+
+    def analyze_text(self, text):
+        
+        words = word_tokenize(text.lower())
+        cleaned_words = [re.sub(r'[^\w\s]', '', word) for word in words if re.sub(r'[^\w\s]', '', word)]
+           
+        # 2. char數(含空格)
+        char_count_including_spaces = len(text)
+
+        # 3. char數(不含空格)
+        char_count_excluding_spaces = len(text.replace(" ", ""))
+
+        # 4. word數量
+        word_count = len(cleaned_words)
+
+        # 5. 句子數量
+        sentences = sent_tokenize(text)
+        sentence_count = len(sentences)
+
+        # 6. 非 ASCII  char
+        non_ascii_chars = [char for char in text if ord(char) > 127]
+        non_ascii_char_count = len(non_ascii_chars)
+
+        # 7. 非 ASCII word
+        non_ascii_words = [word for word in words if any(
+            ord(char) > 127 for char in word)]
+        non_ascii_word_count = len(non_ascii_words)
+
+        return {
+            "char_count_including_spaces": char_count_including_spaces,
+            "char_count_excluding_spaces": char_count_excluding_spaces,
+            "word_count": word_count,
+            "sentence_count": sentence_count,
+            "non_ascii_char_count": non_ascii_char_count,
+            "non_ascii_word_count": non_ascii_word_count
+        }
+
+
+    def Search(self,data, query):
         if len(query) != 0:
+            #把nltk處理加進來
             query_tokens = self.preprocess(query)
             search_results = {}
             for item in self._nltk_texts:
@@ -92,38 +123,4 @@ class Processor():
             result_lines.append(f"... {left_context} {highlighted_token} {right_context} ...")
         return "<br>".join(result_lines)
 
-    def analyze_text(self, text):
-        
-        words = word_tokenize(text.lower())
-        cleaned_words = [re.sub(r'[^\w\s]', '', word) for word in words if re.sub(r'[^\w\s]', '', word)]
-           
-        # 2. char數(含空格)
-        char_count_including_spaces = len(text)
-
-        # 3. char數(不含空格)
-        char_count_excluding_spaces = len(text.replace(" ", ""))
-
-        # 4. word數量
-        word_count = len(cleaned_words)
-
-        # 5. 句子數量
-        sentences = sent_tokenize(text)
-        sentence_count = len(sentences)
-
-        # 6. 非 ASCII  char
-        non_ascii_chars = [char for char in text if ord(char) > 127]
-        non_ascii_char_count = len(non_ascii_chars)
-
-        # 7. 非 ASCII word
-        non_ascii_words = [word for word in words if any(
-            ord(char) > 127 for char in word)]
-        non_ascii_word_count = len(non_ascii_words)
-
-        return {
-            "char_count_including_spaces": char_count_including_spaces,
-            "char_count_excluding_spaces": char_count_excluding_spaces,
-            "word_count": word_count,
-            "sentence_count": sentence_count,
-            "non_ascii_char_count": non_ascii_char_count,
-            "non_ascii_word_count": non_ascii_word_count
-        }
+    
