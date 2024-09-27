@@ -26,11 +26,17 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        self.__ui.Search_input.setPlaceholderText('輸入搜尋關鍵字...')
-        self.__ui.Search_input.textChanged.connect(self.highlight_text)  # 當文字改變時執行搜尋
+        self.__ui.Content_analyze.setWordWrap(True)  # 啟用自動分行
+        # self.__ui.Content_analyze.setFixedSize(288, 477)  # 設定 QLabel 的固定寬度與高度
 
-        self.__ui.ccb_Page1.currentIndexChanged.connect(self.update_Page1)  # 當選項改變時更新 QTextEdit1
-        self.__ui.ccb_Page2.currentIndexChanged.connect(self.update_Page2)  # 當選項改變時更新 QTextEdit1
+        self.__ui.Search_input.setPlaceholderText('輸入搜尋關鍵字...')
+        self.__ui.Search_input.textChanged.connect(
+            self.highlight_text)  # 當文字改變時執行搜尋
+
+        self.__ui.ccb_Page1.currentIndexChanged.connect(
+            self.update_Page1)  # 當選項改變時更新 QTextEdit1
+        self.__ui.ccb_Page2.currentIndexChanged.connect(
+            self.update_Page2)  # 當選項改變時更新 QTextEdit1
 
         self.fillColor = QColor(30, 30, 30, 120)
         self.penColor = QColor("333333")
@@ -41,7 +47,7 @@ class MainWindow(QMainWindow):
         # 檔案列表區域
         self.__ui.file_list.setFont(QFont("Arial", 12))
         self.__ui.file_list.itemSelectionChanged.connect(
-            self.display_file_content)
+            self.display_file_Analysis)
 
         self._processor = Processor()
         self._reader = Reader()
@@ -71,19 +77,32 @@ class MainWindow(QMainWindow):
                 result = self._processor.Normalize(data)
                 self.file[file_name] = result
                 self.__ui.file_list.addItem(file_name)
-                self.__ui.ccb_Page1.addItem(file_name,result)
-                self.__ui.ccb_Page2.addItem(file_name,result)
+                self.__ui.ccb_Page1.addItem(file_name, result)
+                self.__ui.ccb_Page2.addItem(file_name, result)
 
-
-
-
-    def display_file_content(self):
-        # 顯示選擇的檔案內容
+    def display_file_Analysis(self):
+        # 顯示選擇檔案的統計資料
         selected_item = self.__ui.file_list.currentItem()
         if selected_item:
             file_name = selected_item.text()
-            content = self.file[file_name]["Content"]
-            
+            char_count_including_spaces = self.file[file_name]["char_count_including_spaces"]
+            char_count_excluding_spaces = self.file[file_name]["char_count_excluding_spaces"]
+            word_count = self.file[file_name]["word_count"]
+            sentence_count = self.file[file_name]["sentence_count"]
+            non_ascii_char_coun = self.file[file_name]["non_ascii_char_count"]
+            non_ascii_word_count = self.file[file_name]["non_ascii_word_count"]
+            # 將多個變數值組合成一個字串
+            combined_text = (
+                f"[ {self.file[file_name]["Title"]}]\n"
+                f"char_count_including_spaces: {char_count_including_spaces}\n"
+                f"char_count_excluding_spaces: {char_count_excluding_spaces}\n"
+                f"word_count: {word_count}\n"
+                f"sentence_count: {sentence_count}\n"
+                f"non_ascii_char_coun: {non_ascii_char_coun}\n"
+                f"non_ascii_word_count: {non_ascii_word_count}\n"
+            )
+
+            self.__ui.Content_analyze.setText(combined_text)
 
     def delete_selected_file(self):
         # 刪除選擇的檔案
@@ -98,7 +117,7 @@ class MainWindow(QMainWindow):
                 # 移除檔案
                 self.file.pop(file_name, None)
                 self.__ui.file_list.takeItem(
-                self.__ui.file_list.row(selected_item))
+                    self.__ui.file_list.row(selected_item))
                 self.__ui.textEdit.clear()
 
     def update_Page1(self):
@@ -107,8 +126,8 @@ class MainWindow(QMainWindow):
             text = selected_item
             # 顯示內容於 QTextEdit1 中
             search_word = self.__ui.Search_input.text().strip().lower()
-            self._processor.search(text['Content'],search_word)
-           # self.__ui.textEdit.setPlainText(f"內容:\n{text['Content']}")
+            self._processor.Search(text['Content'], search_word)
+            self.__ui.textEdit.setPlainText(f"內容:\n{text['Content']}")
 
     def update_Page2(self):
         selected_item = self.__ui.ccb_Page2.currentData()
@@ -116,7 +135,6 @@ class MainWindow(QMainWindow):
             text = selected_item
             # 顯示內容於 QTextEdit1 中
             self.__ui.textEdit_2.setPlainText(f"內容:\n{text['Content']}")
-
 
     def highlight_text(self):
         # 取得使用者輸入的搜尋關鍵字
@@ -134,32 +152,8 @@ class MainWindow(QMainWindow):
 
         # 取得 QTextEdit 的文字內容
         text = text_edit.toPlainText()
-        tokens = word_tokenize(text.lower())
 
-        # 取得 QTextEdit 的游標和格式
-        cursor = text_edit.textCursor()
-        format = QTextCharFormat()
-
-        # 設定高亮顏色
-        format.setBackground(QColor("yellow"))  # 底色設為黃色
-        format.setForeground(QColor("red"))     # 字體顏色設為紅色
-
-        # 從文件開頭開始搜尋並高亮顯示匹配的詞
-        cursor.setPosition(0)
-
-        # 使用 NLTK 的分詞結果來尋找匹配
-        start = 0
-        while start < len(tokens):
-            if tokens[start] == search_word:
-                # 尋找詞在原文本中的實際位置
-                index = text.lower().find(search_word, cursor.position())
-                if index != -1:
-                    cursor.setPosition(index)
-                    cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, len(search_word))
-                    cursor.mergeCharFormat(format)  # 套用格式
-                start += 1
-            else:
-                start += 1
+       # result = self._processor.GetToken(text.lower(),search_word)
 
     def paintEvent(self, event):
         painter = QPainter(self)

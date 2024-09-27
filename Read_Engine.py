@@ -7,19 +7,20 @@ class Reader():
     def ReadXML(self, filepath):
         abstract_texts = []
         content = ET.iterparse(filepath, events=('start', 'end'))
-     
+
         for event, elem in content:
             if event == 'end' and elem.tag == 'AbstractText':
                 text = self.get_text_without_tags(elem)
                 abstract_texts.append(text)
                 elem.clear()
-            if elem.tag == 'ArticleTitle':
+            if elem.tag == 'ArticleTitle' and elem.text:
+                elem.text = elem.text.replace('.', '')
                 self._title = elem.text
 
         combined_text = ' '.join(abstract_texts)
         self._content = combined_text
 
-        return { "Title":self._title,"Content": self._content,"FilePath":filepath}
+        return {"Title": self._title, "Content": self._content, "FilePath": filepath}
 
     def GetFileNum(self):
         return len(self.files)
@@ -51,7 +52,6 @@ class Reader():
 
     def get_text_without_tags(self, element):
         parts = [element.text or '']
-
         for subelem in element:
             parts.append(self.get_text_without_tags(subelem))
             if subelem.tail:
