@@ -85,24 +85,6 @@ class Processor():
             "non_ascii_word_count": non_ascii_word_count
         }
 
-    def Search(self, data, query):
-        if len(query) != 0:
-            # 把nltk處理加進來
-            query_tokens = self.preprocess(query)
-            search_results = {}
-            for item in self._nltk_texts:
-                for doc_id, text in item.items():
-                    results = []
-                    for token in query_tokens:
-                        # print(f"\nConcordance for '{token}':")
-                        results.append(
-                            self.display_full_concordance(text, token, 3, 20))
-
-                        # results[doc_id].append(resultline)
-                search_results[doc_id] = results
-
-            return search_results
-
     def preprocess(self, text):
         text = text.translate(str.maketrans('', '', string.punctuation))
         tokens = word_tokenize(text.lower())

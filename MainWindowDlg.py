@@ -6,6 +6,7 @@ from Ui_MainWindow import Ui_MainWindow
 from PyQt5.QtWidgets import QFileDialog
 from Read_Engine import Reader
 from DataProcess import Processor
+from nltk.tokenize import word_tokenize  # 引入 NLTK 的分詞模組
 
 
 class MainWindow(QMainWindow):
@@ -125,9 +126,10 @@ class MainWindow(QMainWindow):
         if selected_item:
             text = selected_item
             # 顯示內容於 QTextEdit1 中
-            search_word = self.__ui.Search_input.text().strip().lower()
-            self._processor.Search(text['Content'], search_word)
             self.__ui.textEdit.setPlainText(f"內容:\n{text['Content']}")
+            search_word = self.__ui.Search_input.text().strip().lower()
+            # 高亮顯示 QTextEdit1 中的關鍵字
+            self.highlight_in_text_edit(self.__ui.textEdit, search_word)
 
     def update_Page2(self):
         selected_item = self.__ui.ccb_Page2.currentData()
@@ -135,6 +137,8 @@ class MainWindow(QMainWindow):
             text = selected_item
             # 顯示內容於 QTextEdit1 中
             self.__ui.textEdit_2.setPlainText(f"內容:\n{text['Content']}")
+            search_word = self.__ui.Search_input.text().strip().lower()
+            self.highlight_in_text_edit(self.__ui.textEdit_2, search_word)
 
     def highlight_text(self):
         # 取得使用者輸入的搜尋關鍵字
@@ -147,13 +151,52 @@ class MainWindow(QMainWindow):
         self.highlight_in_text_edit(self.__ui.textEdit_2, search_word)
 
     def highlight_in_text_edit(self, text_edit, search_word):
+
+        self.clear_highlight(text_edit)
+
         if not search_word:
             return
 
         # 取得 QTextEdit 的文字內容
         text = text_edit.toPlainText()
 
-       # result = self._processor.GetToken(text.lower(),search_word)
+        # 高亮顯示搜尋關鍵字
+
+        format = QTextCharFormat()
+        format.setBackground(QColor("yellow"))
+        format.setForeground(QColor("red"))
+
+        text_edit.moveCursor(QTextCursor.Start)
+
+        # 設置計數器
+        count = 0
+        while text_edit.find(search_word,  QTextDocument.FindFlags(QTextDocument.FindWholeWords)):
+            cursor = text_edit.textCursor()
+            cursor.setCharFormat(QTextCharFormat())
+            cursor.mergeCharFormat(format)  # 套用格式
+            count += 1  # 每找到一次就增加計數
+
+        text_edit.moveCursor(QTextCursor.End)
+        # 將找到的次數附加到文本的最後
+        text_edit.insertPlainText(f"\n\n找到的次數: {count}")
+
+        # 強制更新 QTextEdit，避免需要點擊才能顯示的問題
+        text_edit.repaint()  # 強制重繪
+        text_edit.moveCursor(QTextCursor.Start)  # 重置游標位置到開頭
+
+    def clear_highlight(self, text_edit):
+        """ 清除 QTextEdit 中的所有高亮效果 """
+        # 將游標移動到文本開頭
+        cursor = text_edit.textCursor()
+        cursor.select(QTextCursor.Document)  # 選擇整個文檔
+
+        # 清除所有文字格式
+        default_format = QTextCharFormat()
+        cursor.setCharFormat(default_format)
+
+        text = text_edit.toPlainText()
+        if "\n\n找到的次數:" in text:
+            text_edit.setPlainText(text.split("\n\n找到的次數:")[0])
 
     def paintEvent(self, event):
         painter = QPainter(self)
