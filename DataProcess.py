@@ -41,10 +41,9 @@ class Processor():
                 index_dict[word_lower] = []
             index_dict[word_lower].append(position)
             position += len(word) + 1  # 更新位置，考慮到空格
-        # 顯示索引結果 0927
+        # 顯示索引結果 0927 之後可能會用到
         index_text = "\n".join(
             [f"{word}: {positions}" for word, positions in index_dict.items()])
-        print(index_text)
 
         return self._results
 

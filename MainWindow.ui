@@ -204,7 +204,7 @@ font-weight: bold; /* 設定字體粗體 */
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,9">
+       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,1,9">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="7,9,3,5,1">
           <item>
@@ -342,6 +342,9 @@ font-weight: bold; /* 設定字體粗體 */
            </layout>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QListWidget" name="ContentHaveKeywords"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">

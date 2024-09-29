@@ -59,6 +59,7 @@ class MainWindow(QMainWindow):
         self.__ui.Load.clicked.connect(self.bnt_load_Clicked)
         self.__ui.Delete.clicked.connect(self.delete_selected_file)
         self.__ui.Exit.clicked.connect(self.close_application)
+        self.__ui.Search.clicked.connect(self.search_articles)
 
     def close_application(self):
         # 關閉程式
@@ -197,6 +198,25 @@ class MainWindow(QMainWindow):
         text = text_edit.toPlainText()
         if "\n\n找到的次數:" in text:
             text_edit.setPlainText(text.split("\n\n找到的次數:")[0])
+
+    def search_articles(self):
+        search_word = self.__ui.Search_input.text().strip().lower()
+
+        # 若沒有輸入搜尋詞，則直接返回
+        if not search_word:
+            self.__ui.ContentHaveKeywords.clear()  # 恢復原本的文章列表
+            return
+
+        self.__ui.ContentHaveKeywords.clear()
+        for key, value in self.file.items():
+            title = key
+            content = value['Content']
+
+            # 檢查文章內容是否包含搜尋關鍵字
+            if search_word in content.lower() or search_word in title.lower():
+                item = QListWidgetItem(f"{title}")
+                item.setForeground(QColor("red"))  # 標示字體顏色為紅色
+                self.__ui.ContentHaveKeywords.addItem(item)
 
     def paintEvent(self, event):
         painter = QPainter(self)
