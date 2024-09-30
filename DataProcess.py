@@ -94,30 +94,4 @@ class Processor():
 
         return filtered_tokens
 
-    def display_full_concordance(self, text, token, window=5, lines=10):
-        """
-        token 的上下文而不截断
-        :param text: nltk 的 Text 对象
-        :param token: 要搜索的目标 token
-        :param window: 上下文范围的词数
-        :param lines: 显示结果的行数
-        """
-        matches = [i for i, t in enumerate(
-            text.tokens) if t.lower() == token.lower()]
-        result_lines = []
-
-        if not matches:
-            return "<br>".join(result_lines)
-
-        for i in matches[:lines]:
-            start = max(i - window, 0)
-            end = min(i + window + 1, len(text.tokens))
-
-            left_context = ' '.join(text.tokens[start:i])
-            right_context = ' '.join(text.tokens[i + 1:end])
-
-            highlighted_token = f"<span style='color: red; background-color: yellow;'>{
-                token}</span>"
-            result_lines.append(f"... {left_context} {
-                                highlighted_token} {right_context} ...")
-        return "<br>".join(result_lines)
+    

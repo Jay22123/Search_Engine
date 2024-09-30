@@ -353,7 +353,16 @@ font-weight: bold; /* 設定字體粗體 */
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QComboBox" name="ccb_Page1"/>
+               <widget class="QComboBox" name="ccb_Page1">
+                <property name="font">
+                 <font>
+                  <family>微軟正黑體</family>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QTextEdit" name="textEdit">
@@ -374,7 +383,16 @@ font-weight: bold; /* 設定字體粗體 */
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_8">
               <item>
-               <widget class="QComboBox" name="ccb_Page2"/>
+               <widget class="QComboBox" name="ccb_Page2">
+                <property name="font">
+                 <font>
+                  <family>微軟正黑體</family>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QTextEdit" name="textEdit_2">
@@ -409,7 +427,7 @@ font-weight: bold; /* 設定字體粗體 */
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>

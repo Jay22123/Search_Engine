@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         self.__ui.ccb_Page2.clear()
         options = QFileDialog.Options()
         files, _ = QFileDialog.getOpenFileNames(
-            self, "選擇 XML 檔案", "./data", "XML Files (*.xml);;All Files (*)", options=options)
+            self, "選擇 XML 檔案", "./", "XML Files (*.xml);;All Files (*)", options=options)
         if files:
             for file_path in files:
                 file_name = file_path.split('/')[-1]
@@ -93,9 +93,10 @@ class MainWindow(QMainWindow):
             sentence_count = self.file[file_name]["sentence_count"]
             non_ascii_char_coun = self.file[file_name]["non_ascii_char_count"]
             non_ascii_word_count = self.file[file_name]["non_ascii_word_count"]
+            title = self.file[file_name]["Title"]
             # 將多個變數值組合成一個字串
             combined_text = (
-                f"[ {self.file[file_name]["Title"]}]\n"
+                f" [{title}] \n"
                 f"char_count_including_spaces: {char_count_including_spaces}\n"
                 f"char_count_excluding_spaces: {char_count_excluding_spaces}\n"
                 f"word_count: {word_count}\n"
@@ -121,6 +122,14 @@ class MainWindow(QMainWindow):
                 self.__ui.file_list.takeItem(
                     self.__ui.file_list.row(selected_item))
                 self.__ui.textEdit.clear()
+                index = self.__ui.ccb_Page1.findText(file_name)  # 查找文字對應的索引
+                if index != -1:  # 如果找到了
+                    self.__ui.ccb_Page1.removeItem(index)  # 刪除該選項
+
+                index = self.__ui.ccb_Page2.findText(file_name)  # 查找文字對應的索引
+                if index != -1:  # 如果找到了
+                    self.__ui.ccb_Page2.removeItem(index)  # 刪除該選項
+               
 
     def update_Page1(self):
         selected_item = self.__ui.ccb_Page1.currentData()
